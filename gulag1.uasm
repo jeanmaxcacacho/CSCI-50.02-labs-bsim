@@ -38,10 +38,15 @@ loop:
       CMPLT(r2, r0, r3)  | current index less than array size?
       BEQ(r3, done, r31) | if index >= array size then loop done
 
-      ADDC(r2, 4, r2)
-      LD(r2, DATA, )
+      LD(r2, DATA, r4)   | put current entry into r4
+      ANDC(r4, 1, r5)    | will return 1 if odd, 0 if even
+      BNE(r5, next, r31) | if odd then skip
+
+      ADD(r5, r1, r1)    | add even number to the running sum
 
 next:
+      ADDC(r2, 4, r2)
+      BR(loop)
 
 done:
       ST(r2, result, r31) | put result into main memory
