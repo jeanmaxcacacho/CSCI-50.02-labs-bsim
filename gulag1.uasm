@@ -31,12 +31,18 @@ result: LONG(0) | sum of all even array entries
 
 main:
       LD(r31, DATA, r0) | r0 will have array size
-      ADDC(r31, 0, r1)  | r1 will hold sum
-      ADDC(r31, 0, r2)  | r2 will hold array index
+      ADD(r31, r31, r1)  | r1 will hold sum
+      ADD(r31, r31, r2)  | r2 will hold array index
 
 loop:
-      CMPLE(r2, r0, r3) | fuc fuck
+      CMPLT(r2, r0, r3)  | current index less than array size?
+      BEQ(r3, done, r31) | if index >= array size then loop done
+
+      ADDC(r2, 4, r2)
+      LD(r2, DATA, )
 
 next:
 
 done:
+      ST(r2, result, r31) | put result into main memory
+      HALT()
