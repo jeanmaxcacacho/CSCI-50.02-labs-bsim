@@ -15,6 +15,10 @@
 
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
+| CACACHO, Jean Maximus
+| DURON, Joseph Jr
+| ONG, Paolo Gabriel
+
 .include beta.uasm          | include the standard predefined macros
 
         LD(r31, DATA, r0)   | r0 = memory[r31 + DATA] (the array length)
