@@ -11,7 +11,9 @@
 | DATA = [3, -5, 12, -14, 1]
 | result = -2
 
-| beta ISA gives a modulus operator for free
+| DATA = [3, 6, 9, 12, 15]
+| result = 18
+
 | int evenSum = 0;
 | for (int i = 0; i < DATA.length; i++) {
 |    if (DATA[i] % 2 == 0) evenSum += DATA[i];
@@ -19,35 +21,36 @@
 
 .include beta.uasm
 
-| for this set of inputs expected sum is 18 (0x12)
-DATA: LONG(5)  | array size
-      LONG(3)  | first entry
-      LONG(6)
-      LONG(9)
+DATA: LONG(5)   | array size
+      LONG(3)   | first entry
+      LONG(-5)
       LONG(12)
-      LONG(15) | last entry 
+      LONG(-14)
+      LONG(1)   | last entry 
 
-result: LONG(0) | sum of all even array entries
+| for this set of inputs expected sum is 18 (0x12)
+result: LONG(0)
 
 main:
       LD(r31, DATA, r0) | r0 will have array size
-      ADD(r31, r31, r1)  | r1 will hold sum
-      ADD(r31, r31, r2)  | r2 will hold array index
+      ADDC(r31, 0, r1)  | r1 will hold running sum
+      ADDC(r31, 1, r2)  | r2 will hold "array index"
 
 loop:
-      CMPLT(r2, r0, r3)  | current index less than array size?
-      BEQ(r3, done, r31) | if index >= array size then loop done
+      CMPLE(r2, r0, r3)  | current index <= array size?
+      BEQ(r3, done, r31) | if index > array size then loop done
 
-      LD(r2, DATA, r4)   | put current entry into r4
-      ANDC(r4, 1, r5)    | will return 1 if odd, 0 if even
-      BNE(r5, next, r31) | if odd then skip
+      SHL(r2, 2, r4)     | idk why just adding + 4 doesn't work
+      LD(r4, DATA, r5)   | load current array entry into r5
+      ANDC(r5, 1, r6)    | bitwise AND to check for odd/even
+      BNE(r6, next, r31) | if r6 == 1, then r5 is odd, skip
 
       ADD(r5, r1, r1)    | add even number to the running sum
 
 next:
-      ADDC(r2, 4, r2)
+      ADDC(r2, 1, r2)
       BR(loop)
 
 done:
-      ST(r2, result, r31) | put result into main memory
+      ST(r1, result, r31) | put result into main memory
       HALT()
