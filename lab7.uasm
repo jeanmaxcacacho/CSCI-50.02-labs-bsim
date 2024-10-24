@@ -1,0 +1,39 @@
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+| This sample .uasm program processes an array of ints (defined at the DATA
+| portion of this file), multiplying each int by 2.
+|
+| Important notes:
+| 1. All registers r0 to r31 are initially set to 0.
+| 2. For Lab 7, you are expected to mark the beginning of your "user input"
+|    using the label DATA:, as demonstrated below.  Your program's output
+|    will also be expected to be written in this area (depending on the
+|    program's requirements).
+| 3. While this sample program should work fine with most user inputs, there is
+|    a special case that will cause it to fail.  (Can you figure it out?)
+|
+| Happy hacking!
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+.include beta.uasm          | include the standard predefined macros
+
+        LD(r31, DATA, r0)   | r0 = memory[r31 + DATA] (the array length)
+                            |  note: r31 is a special register that is always
+                            |   zero; you can shorten this line to LD(DATA, r0)
+LOOP:   ADDC(r1, 4, r1)     | r1 = r1 + 4 (that is, advance to the next int)
+        LD(r1, DATA, r2)    | r2 = memory[r1 + DATA]
+        SHLC(r2, 1, r2)     | r2 = r2 << 1 (that is, multiply r2 by 2)
+        ST(r2, DATA, r1)    | memory[DATA + r1] = r2
+        SUBC(r0, 1, r0)     | r0 = r0 - 1
+        BNE(r0, LOOP)       | (B)ranch back to LOOP if r0 is (N)ot (E)qual to 0
+        HALT()              | otherwise, finish execution
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+| DATA marks the beginning of user "input" in memory.
+DATA:   LONG(5)             | <-- length of the array
+        LONG(4)             | <-- first element of the array
+        LONG(2)
+        LONG(0)
+        LONG(6)
+        LONG(-9)            | <-- last element of the array
