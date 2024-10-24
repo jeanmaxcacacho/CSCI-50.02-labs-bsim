@@ -1,1 +1,31 @@
+| CACACHO, Jean Maximus
+| DURON, Joseph Jr
+| ONG, Paolo Gabriel
+
+| reverse elements of array, overwrite orig array
+
+| DATA = [3, -5, 12, -14, 1]
+| result = [1, -14, 12, -5, 3]
+
+| implement two pointers algorithm in ASM lmfao....
+| TODO: watch a two pointers algo video toms
+
 .include beta.uasm
+
+main:
+      LD(r31, DATA, r0) | r0 holds array size
+      ADDC(r31, 1, r1)  | r1 holds start pointer
+      ADD(r31, r0, r2)  | r2 holds end pointer
+
+loop:
+
+next:
+
+done:
+
+DATA: LONG(5)
+      LONG(3)
+      LONG(-5)
+      LONG(12)
+      LONG(-14)
+      LONG(1)
