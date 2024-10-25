@@ -14,31 +14,7 @@
 | 0xF2
 | 0x01
 
-| current output is...
-| 0xF2
-| 0x0C
-| 0xFB
-| 0x03
-| 0x01
-
-| 1st iteration
-| 0xF2
-| 0xFB
-| 0x0C
-| 0x03
-| 0x01
-
-| 2nd iteration
-| 0xF2
-| 0x0C
-| 0xFB
-| 0x03
-| 0x01
-
-| 3rd iteration
-| go to done
-
-| something about correct address calculation....?
+| the problem something about correct address calculation....?
 
 .include beta.uasm
 
