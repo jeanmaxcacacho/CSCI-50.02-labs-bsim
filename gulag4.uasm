@@ -2,4 +2,50 @@
 | DURON, Joseph Jr
 | ONG, Paolo Gabriel
 
+| DATA contains single a 32-bit int (n)
+| produce first N terms of fibonacci right after
+
 .include beta.uasm
+
+main:
+      LD(r31, DATA, r0)  | store n into r0
+      ADDC(r31, 0, r1)   | n_1 in r1
+      ADDC(r31, 1, r2)   | n_2 in r2
+
+      ADDC(DATA, 4, r3)  | initial address for storing terms
+      BEQ(r0, done, r31) | when n reaches 0, all fib terms have been written
+
+      ST(r1, r31, r3)    | store n_1 in initial address
+      ADDC(r3, 4, r3)    | increment address
+      SUBC(r0, 1, r4)    | decrement n by 1; r4 acts as term counter
+      BEQ(r4, done, r31) | if n == 0 program halts
+      ST(r2, r31, r3)    | store n_2 in memory
+      ADDC(r3, 4, r3)    | increment address
+
+loop:
+      ADD(r1, r2, r5)    | f(n-2) + f(n-1)
+      ST(r5, r31, r3)    | store into memory latest fibonacci term
+      ADDC(r3, 4, r3)    | increment address
+
+      MOVE(r2, r1)       | r1 = f(n-2)
+      MOVE(r5, r2)       | r2 = f(n-1)
+
+      SUBC(r4, 1, r4)    | decrement term counter by 1
+      BNE(r4, loop, r31) | if term counter still > 0, continue looping
+
+done:
+      HALT()
+
+DATA: LONG(10)
+
+| expected output
+| 0x00
+| 0x01
+| 0x01
+| 0x02
+| 0x03
+| 0x05
+| 0x08
+| 0x0D
+| 0x15
+| 0x22
