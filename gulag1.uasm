@@ -33,8 +33,8 @@ loop:
       ADD(r5, r1, r1)    | add even number to the running sum
 
 next:
-      ADDC(r2, 1, r2)
-      BR(loop)
+      ADDC(r2, 1, r2)    | increment index
+      BR(loop)           | go back
 
 done:
       ST(r1, result, r31) | put result into main memory

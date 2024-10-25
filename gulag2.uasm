@@ -10,22 +10,50 @@
 | implement two pointers algorithm in ASM lmfao....
 | TODO: watch a two pointers algo video toms
 
+| if ever they ask for asymptotic analysis: O(n) time O(1) space
+
 .include beta.uasm
 
 main:
       LD(r31, DATA, r0) | r0 holds array size
-      ADDC(r31, 1, r1)  | r1 holds start pointer
-      ADD(r31, r0, r2)  | r2 holds end pointer
+      ADDC(r31, 1, r1)  | r1 holds left pointer
+      SUBC(r0, 1, r2)   | r2 holds right pointer arr[size-1]
 
 loop:
+      CMPLT(r1, r2, r3)  | while left < right (r1 < r2)
+      BEQ(r3, done, r31) | if r1 >= r2, reverse is done
+
+      SHLC(r1, 2, r4)    | r4 holding "left index" offset applied
+      SHLC(r2, 2, r5)    | r5 holding "right index" offset applied
+
+      LD(r4, DATA, r6)   | r6 holding left array entry
+      LD(r5, DATA, r7)   | r7 holding right array entry
+
+      ST(r6, DATA, r5)   | arr[right] = arr[left]; DATA[r5] = r6
+      ST(r7, DATA, r4)   | arr[left] = temp; DATA[r4] = r7
 
 next:
+      ADDC(r1, 1, r1) | increment left pointer
+      SUBC(r2, 1, r2) | decrement right pointer
+      BR(loop)        | go back
 
 done:
+      HALT()
+
+| table of kabobohan
+| 0xFF -1
+| 0xFE -2
+| 0xFD -3
+| 0xFC -4
+| 0xFB -5
+
+| 0xF0 -16
+| 0xF1 -15
+| 0xF2 -14
 
 DATA: LONG(5)
-      LONG(3)
-      LONG(-5)
-      LONG(12)
-      LONG(-14)
-      LONG(1)
+      LONG(3)   | 0x03
+      LONG(-5)  | 0xFB
+      LONG(12)  | 0x0C
+      LONG(-14) | 0xF2
+      LONG(1)   | 0x01
