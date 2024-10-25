@@ -13,21 +13,20 @@ main:
       ADDC(r31, 1, r2)    | fibonacci_2 in r2
 
       ADDC(r31, DATA, r3) | get current address of DATA shove it into r3
-      ADDC(r3, 4, r3)     | increment that address
+      ADDC(r3, 4, r3)     | address of fibonacci_1
 
       BEQ(r0, done, r31)  | n == 0 case
 
-      ST(r1, r31, r3)    | store n_1 in initial address
-      ADDC(r3, 4, r3)    | increment address
-      SUBC(r0, 1, r4)    | decrement n by 1; r4 acts as term counter
+      ST(r1, r31, r3)     | store fibonacci_1 into DATA + 4
+      ADDC(r3, 4, r3)     | increment address
+      SUBC(r0, 1, r4)     | decrement n by 1; r4 acts as term counter
 
       BEQ(r4, done, r31) | n == 1 case
 
-      ST(r2, r31, r3)    | store n_2 in memory
-      SUBC(r4, 1, r4)    | decrement term counter again
+      ST(r2, r31, r3)    | store fibonacci_2 into memory
       ADDC(r3, 4, r3)    | increment address
+      SUBC(r4, 1, r4)    | decrement term counter again
 
-      BEQ(r4, done, r31) | n == 2 case
 
 loop:
       BEQ(r4, done, r31)
