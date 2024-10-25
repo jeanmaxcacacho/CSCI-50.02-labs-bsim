@@ -2,6 +2,9 @@
 | DURON, Joseph Jr
 | ONG, Paolo Gabriel
 
+| TODO: correct amt. of fibonacci terms are stored in the wrong locations
+|       ensure that terms are located in the right address
+
 | DATA contains single a 32-bit int (n)
 | produce first N terms of fibonacci right after
 
@@ -44,7 +47,7 @@ loop:
 done:
       HALT()
 
-DATA: LONG(10)
+DATA: LONG(10) | is inside 0x58
 
 | expected output (current output)
 | 0x00

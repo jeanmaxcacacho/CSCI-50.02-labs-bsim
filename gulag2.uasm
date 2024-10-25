@@ -2,17 +2,20 @@
 | DURON, Joseph Jr
 | ONG, Paolo Gabriel
 
+| TODO: ensure that actual array reversal takes place
+
 | reverse elements of array, overwrite orig array
 
 | DATA = [3, -5, 12, -14, 1]
 | result = [1, -14, 12, -5, 3]
 
 | in stack look for... (this is expected output)
-| 0x03
-| 0xFB
-| 0x0C
-| 0xF2
+| 0x05 (array size)
 | 0x01
+| 0xF2
+| 0x0C
+| 0xFB
+| 0x03
 
 | the problem something about correct address calculation....?
 
