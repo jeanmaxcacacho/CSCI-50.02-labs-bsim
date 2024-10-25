@@ -21,6 +21,25 @@
 | 0x03
 | 0x01
 
+| 1st iteration
+| 0xF2
+| 0xFB
+| 0x0C
+| 0x03
+| 0x01
+
+| 2nd iteration
+| 0xF2
+| 0x0C
+| 0xFB
+| 0x03
+| 0x01
+
+| 3rd iteration
+| go to done
+
+| something about correct address calculation....?
+
 .include beta.uasm
 
 main:
@@ -35,11 +54,21 @@ loop:
       SHLC(r1, 2, r4)    | r4 holding "left index" offset applied
       SHLC(r2, 2, r5)    | r5 holding "right index" offset applied
 
-      LD(r4, DATA, r6)   | r6 holding left array entry
-      LD(r5, DATA, r7)   | r7 holding right array entry
+      ADD(r4, DATA, r4)  | effective address left
+      ADD(r5, DATA, r5)  | effective address right
 
-      ST(r6, DATA, r5)   | arr[right] = arr[left]; DATA[r5] = r6
-      ST(r7, DATA, r4)   | arr[left] = temp; DATA[r4] = r7
+      LD(r4, r31, r6)    | left entry
+      LD(r5, r31, r7)    | right entry
+
+      ST(r6, r31, r5)    | arr[right] = arr[left]
+      ST(r7, r31, r4)    | arr[left] = arr[right]
+
+      | this is the version that intuitively makes sense...
+      | LD(r4, DATA, r6)   | r6 holding left array entry
+      | LD(r5, DATA, r7)   | r7 holding right array entry
+
+      | ST(r6, DATA, r5)   | arr[right] = arr[left]; DATA[r5] = r6
+      | ST(r7, DATA, r4)   | arr[left] = temp; DATA[r4] = r7
 
 next:
       ADDC(r1, 1, r1) | increment left pointer
