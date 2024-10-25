@@ -9,8 +9,8 @@
 
 main:
       LD(r31, DATA, r0)   | store n into r0
-      ADDC(r31, 0, r1)    | n_1 in r1
-      ADDC(r31, 1, r2)    | n_2 in r2
+      ADDC(r31, 0, r1)    | fibonacci_1 in r1
+      ADDC(r31, 1, r2)    | fibonacci_2 in r2
 
       ADDC(r31, DATA, r3) | get current address of DATA shove it into r3
       ADDC(r3, 4, r3)     | increment that address
@@ -20,12 +20,18 @@ main:
       ST(r1, r31, r3)    | store n_1 in initial address
       ADDC(r3, 4, r3)    | increment address
       SUBC(r0, 1, r4)    | decrement n by 1; r4 acts as term counter
+
       BEQ(r4, done, r31) | n == 1 case
+
       ST(r2, r31, r3)    | store n_2 in memory
+      SUBC(r4, 1, r4)    | decrement term counter again
       ADDC(r3, 4, r3)    | increment address
+
+      BEQ(r4, done, r31) | n == 2 case
 
 loop:
       BEQ(r4, done, r31)
+
       ADD(r1, r2, r5)    | f(n-2) + f(n-1)
       ST(r5, r31, r3)    | store into memory latest fibonacci term
       ADDC(r3, 4, r3)    | increment address
@@ -41,7 +47,7 @@ done:
 
 DATA: LONG(10)
 
-| expected output
+| expected output (current output)
 | 0x00
 | 0x01
 | 0x01
@@ -52,16 +58,3 @@ DATA: LONG(10)
 | 0x0D
 | 0x15
 | 0x22
-
-| current output (also not stored at the right memory addresses)
-| 0x00
-| 0x01
-| 0x01
-| 0x02
-| 0x03
-| 0x05
-| 0x08
-| 0x0D
-| 0x15
-| 0x22
-| 0x37 (who invited bro to the party? i dare u to go home bro)
