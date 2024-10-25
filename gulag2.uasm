@@ -7,6 +7,20 @@
 | DATA = [3, -5, 12, -14, 1]
 | result = [1, -14, 12, -5, 3]
 
+| in stack look for... (this is expected output)
+| 0x03
+| 0xFB
+| 0x0C
+| 0xF2
+| 0x01
+
+| current output is...
+| 0xF2
+| 0x0C
+| 0xFB
+| 0x03
+| 0x01
+
 .include beta.uasm
 
 main:
@@ -34,17 +48,6 @@ next:
 
 done:
       HALT()
-
-| table of kabobohan
-| 0xFF -1
-| 0xFE -2
-| 0xFD -3
-| 0xFC -4
-| 0xFB -5
-
-| 0xF0 -16
-| 0xF1 -15
-| 0xF2 -14
 
 DATA: LONG(5)
       LONG(3)   | 0x03
