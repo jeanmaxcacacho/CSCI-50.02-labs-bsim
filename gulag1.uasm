@@ -2,12 +2,6 @@
 | DURON, Joseph Jr
 | ONG, Paolo Gabriel
 
-| sum of all even entries in a n-sized array
-| DATA will contain 32-bit int dictating array size
-| n amount of 32-bit integers that are the array elements
-| program should add even integers (even negative ones)
-| store result right after array
-
 | DATA = [3, -5, 12, -14, 1]
 | result = -2
 
@@ -25,7 +19,7 @@ loop:
       CMPLE(r2, r0, r3)  | current index <= array size?
       BEQ(r3, done, r31) | if index > array size then loop done
 
-      SHLC(r2, 2, r4)    | idk why just adding + 4 doesn't work
+      SHLC(r2, 2, r4)    | calculate effective index
       LD(r4, DATA, r5)   | load current array entry into r5
       ANDC(r5, 1, r6)    | bitwise AND to check for odd/even
       BNE(r6, next, r31) | if r6 == 1, then r5 is odd, skip
@@ -47,6 +41,4 @@ DATA: LONG(5)   | array size
       LONG(-14)
       LONG(1)   | last entry 
 
-| for this set of inputs expected sum is 18 (0x12)
-| for original set of inputs expected sum is -2 (0xFE)
 result: LONG(0)

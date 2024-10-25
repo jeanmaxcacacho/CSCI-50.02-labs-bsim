@@ -7,11 +7,6 @@
 | DATA = [3, -5, 12, -14, 1]
 | result = [1, -14, 12, -5, 3]
 
-| implement two pointers algorithm in ASM lmfao....
-| TODO: watch a two pointers algo video toms
-
-| if ever they ask for asymptotic analysis: O(n) time O(1) space
-
 .include beta.uasm
 
 main:
