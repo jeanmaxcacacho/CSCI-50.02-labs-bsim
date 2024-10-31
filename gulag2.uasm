@@ -3,6 +3,7 @@
 | ONG, Paolo Gabriel
 
 | TODO: ensure that actual array reversal takes place
+|       it was working naman awhile ago.....
 
 | reverse elements of array, overwrite orig array
 
@@ -24,30 +25,20 @@
 main:
       LD(r31, DATA, r0) | r0 holds array size
       ADDC(r31, 1, r1)  | r1 holds left pointer
-      SUBC(r0, 1, r2)   | r2 holds right pointer arr[size-1]
+      MOVE(r0, r2)      | SUBC(r0, 1, r2)   | r2 holds right pointer arr[size-1]
 
 loop:
       CMPLT(r1, r2, r3)  | while left < right (r1 < r2)
       BEQ(r3, done, r31) | if r1 >= r2, reverse is done
 
-      SHLC(r1, 2, r4)    | r4 holding "left index" offset applied
-      SHLC(r2, 2, r5)    | r5 holding "right index" offset applied
+      SHLC(r1, 2, r4)    | effective index of left
+      SHLC(r2, 2, r5)    | effective index of right
 
-      ADD(r4, DATA, r4)  | effective address left
-      ADD(r5, DATA, r5)  | effective address right
+      LD(r4, DATA, r6)    | left entry
+      LD(r5, DATA, r7)    | right entry
 
-      LD(r4, r31, r6)    | left entry
-      LD(r5, r31, r7)    | right entry
-
-      ST(r6, r31, r5)    | arr[right] = arr[left]
-      ST(r7, r31, r4)    | arr[left] = arr[right]
-
-      | this is the version that intuitively makes sense...
-      | LD(r4, DATA, r6)   | r6 holding left array entry
-      | LD(r5, DATA, r7)   | r7 holding right array entry
-
-      | ST(r6, DATA, r5)   | arr[right] = arr[left]; DATA[r5] = r6
-      | ST(r7, DATA, r4)   | arr[left] = temp; DATA[r4] = r7
+      ST(r6, DATA, r5)    | arr[right] = arr[left]
+      ST(r7, DATA, r4)    | arr[left] = arr[right]
 
 next:
       ADDC(r1, 1, r1) | increment left pointer
