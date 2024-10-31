@@ -2,9 +2,6 @@
 | DURON, Joseph Jr
 | ONG, Paolo Gabriel
 
-| TODO: ensure that actual array reversal takes place
-|       it was working naman awhile ago.....
-
 | reverse elements of array, overwrite orig array
 
 | DATA = [3, -5, 12, -14, 1]
@@ -18,14 +15,17 @@
 | 0xFB
 | 0x03
 
-| the problem something about correct address calculation....?
-
 .include beta.uasm
 
 main:
       LD(r31, DATA, r0) | r0 holds array size
       ADDC(r31, 1, r1)  | r1 holds left pointer
-      MOVE(r0, r2)      | SUBC(r0, 1, r2)   | r2 holds right pointer arr[size-1]
+      MOVE(r0, r2)      | r2 holds right pointer arr[size], this was the critical line
+
+      | don't think of it like normal programming language arrays where you
+      | access the last array entry via arr[size-1], because DATA[0] isn't really
+      | part of the array yet, our last entry will intuitively be the "usual"
+      | last entry of the array (arr[size-1]) "+1 ed" so that becomes just arr[size]
 
 loop:
       CMPLT(r1, r2, r3)  | while left < right (r1 < r2)
