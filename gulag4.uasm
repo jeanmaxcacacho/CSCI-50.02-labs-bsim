@@ -2,61 +2,41 @@
 | DURON, Joseph Jr
 | ONG, Paolo Gabriel
 
-| TODO: correct amt. of fibonacci terms are stored in the wrong locations
-|       ensure that terms are located in the right address
-
-| DATA contains single a 32-bit int (n)
-| produce first N terms of fibonacci right after
-
 .include beta.uasm
 
+| handle cases n == 0-2
+| init registers for accessing memory
 main:
-      LD(r31, DATA, r0)   | store n into r0
-      ADDC(r31, 0, r1)    | fibonacci_1 in r1
-      ADDC(r31, 1, r2)    | fibonacci_2 in r2
+      LD(r31, DATA, r0) | retrieve terms left (n)
+      BEQ(r0, done, r31)| case for n = 0
+      ADDC(r31, 0, r1)  | fibonacci_1 in r1
+      ADDC(r31, 1, r2)  | fibonacci_2 in r2
 
-      ADDC(r31, DATA, r3) | get current address of DATA shove it into r3
-      ADDC(r3, 4, r3)     | address of fibonacci_1
+      | treat DATA as an ArrayList to store consecutively
+      ADDC(r31, 1, r3)   | pointer; DATA[0] is amt of terms to write (n)
+      SHLC(r3, 2, r4)    | pointer with offset applied
+      ST(r1, DATA, r4)   | write fibonacci_1 into main memory
+      SUBC(r0, 1, r0)    | decrement terms left
+      BEQ(r0, done, r31) | case for n = 1
 
-      BEQ(r0, done, r31)  | n == 0 case
-
-      ST(r1, r31, r3)     | store fibonacci_1 into DATA + 4
-      ADDC(r3, 4, r3)     | increment address
-      SUBC(r0, 1, r4)     | decrement n by 1; r4 acts as term counter
-
-      BEQ(r4, done, r31) | n == 1 case
-
-      ST(r2, r31, r3)    | store fibonacci_2 into memory
-      ADDC(r3, 4, r3)    | increment address
-      SUBC(r4, 1, r4)    | decrement term counter again
-
+      ADDC(r3, 1, r3)    | increment pointer
+      SHLC(r3, 2, r4)    | apply offset to pointer
+      ST(r2, DATA, r4)   | write fibonacci_2 into main memory
+      SUBC(r0, 1, r0)    | decrement terms left
+      BEQ(r0, done, r31) | case for n = 2
 
 loop:
-      BEQ(r4, done, r31)
-
-      ADD(r1, r2, r5)    | f(n-2) + f(n-1)
-      ST(r5, r31, r3)    | store into memory latest fibonacci term
-      ADDC(r3, 4, r3)    | increment address
-
-      MOVE(r2, r1)       | r1 = f(n-2)
-      MOVE(r5, r2)       | r2 = f(n-1)
-
-      SUBC(r4, 1, r4)    | decrement term counter by 1
-      BNE(r4, loop, r31) | if term counter still > 0, continue looping
+      ADDC(r3, 1, r3)    | increment pointer
+      SHLC(r3, 2, r4)    | apply offset to pointer
+      ADD(r1, r2, r5)    | retrieve fibonacci_n; f(n-2) + f(n-1)
+      ST(r5, DATA, r4)   | write fibonacci_n into main memory
+      SUBC(r0, 1, r0)    | decrement terms left
+      BEQ(r0, done, r31) | if terms left = 0, exit loop
+      MOVE(r2, r1)       | f(n-1) becomes f(n-2), put into r1
+      MOVE(r5, r2)       | f(n) becomes f(n-1), put into r2
+      BR(loop)
 
 done:
       HALT()
 
-DATA: LONG(10) | is inside 0x58
-
-| expected output (current output)
-| 0x00
-| 0x01
-| 0x01
-| 0x02
-| 0x03
-| 0x05
-| 0x08
-| 0x0D
-| 0x15
-| 0x22
+DATA: LONG(10)
