@@ -1,0 +1,39 @@
+| CACACHO, Jean Maximus
+| DURON, Joseph Jr
+| ONG, Paolo Gabriel
+
+.include beta.uasm
+
+| take each chunk in a plain text (separated into arrays), XOR each chunk, then put it back in the plain text
+
+| DATA = 3, -5, 12, -14, 1
+| key = 42
+| result = 41, -47, 38, -40, 43
+main:
+    LD(r31, DATA, r0)   | key gets stored into r0
+    ADDC(r31, 1, r1)    | index counter
+    SHLC(r1, 2, r4)     | compute to get plain text length, which is the next index
+    LD(r4, DATA, r2)    | plain text length stored into r2
+
+loop:
+    CMPLE(r1, r2, r3)   | is index counter <= plain text length
+    BEQ(r3, done, r31)  | if not, done
+    ADDC(r4, 4, r4)     | retrieve index of next plain text chunk
+    LD(r4, DATA, r5)    | store plain text chunk into r5
+    XOR(r5, r0, r5)     | xor xor xor xor xor xor xor xor xor xor - the nefarious freddy faz(sembly)bear
+    ST(r5, DATA, r4)    | store encrypted chunk back into its location in the plain text
+    ADDC(r1, 1, r1)    | increment r1, the index counter
+    BR(loop)
+
+done:
+    HALT()
+
+
+DATA:
+    LONG(42)    | the key 
+    LONG(5)     | plain text length (i.e. number of 32-bit chunks) 
+    LONG(3)     | plain text values follow 
+    LONG(-5)
+    LONG(12)
+    LONG(-14)
+    LONG(1)

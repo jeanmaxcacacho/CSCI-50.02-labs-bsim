@@ -1,0 +1,42 @@
+| CACACHO, Jean Maximus
+| DURON, Joseph Jr
+| ONG, Paolo Gabriel
+
+.include beta.uasm
+
+| handle cases n == 0-2
+| init registers for accessing memory
+main:
+      LD(r31, DATA, r0) | retrieve terms left (n)
+      BEQ(r0, done, r31)| case for n = 0
+      ADDC(r31, 0, r1)  | fibonacci_1 in r1
+      ADDC(r31, 1, r2)  | fibonacci_2 in r2
+
+      | treat DATA as an ArrayList to store consecutively
+      ADDC(r31, 1, r3)   | pointer; DATA[0] is amt of terms to write (n)
+      SHLC(r3, 2, r4)    | pointer with offset applied
+      ST(r1, DATA, r4)   | write fibonacci_1 into main memory
+      SUBC(r0, 1, r0)    | decrement terms left
+      BEQ(r0, done, r31) | case for n = 1
+
+      ADDC(r3, 1, r3)    | increment pointer
+      SHLC(r3, 2, r4)    | apply offset to pointer
+      ST(r2, DATA, r4)   | write fibonacci_2 into main memory
+      SUBC(r0, 1, r0)    | decrement terms left
+      BEQ(r0, done, r31) | case for n = 2
+
+loop:
+      ADDC(r3, 1, r3)    | increment pointer
+      SHLC(r3, 2, r4)    | apply offset to pointer
+      ADD(r1, r2, r5)    | retrieve fibonacci_n; f(n-2) + f(n-1)
+      ST(r5, DATA, r4)   | write fibonacci_n into main memory
+      SUBC(r0, 1, r0)    | decrement terms left
+      BEQ(r0, done, r31) | if terms left = 0, exit loop
+      MOVE(r2, r1)       | f(n-1) becomes f(n-2), put into r1
+      MOVE(r5, r2)       | f(n) becomes f(n-1), put into r2
+      BR(loop)
+
+done:
+      HALT()
+
+DATA: LONG(10)

@@ -1,0 +1,56 @@
+| CACACHO, Jean Maximus
+| DURON, Joseph Jr
+| ONG, Paolo Gabriel
+
+| reverse elements of array, overwrite orig array
+
+| DATA = [3, -5, 12, -14, 1]
+| result = [1, -14, 12, -5, 3]
+
+| in stack look for... (this is expected output)
+| 0x05 (array size)
+| 0x01
+| 0xF2
+| 0x0C
+| 0xFB
+| 0x03
+
+.include beta.uasm
+
+main:
+      LD(r31, DATA, r0) | r0 holds array size
+      ADDC(r31, 1, r1)  | r1 holds left pointer
+      MOVE(r0, r2)      | r2 holds right pointer arr[size], this was the critical line
+
+      | don't think of it like normal programming language arrays where you
+      | access the last array entry via arr[size-1], because DATA[0] isn't really
+      | part of the array yet, our last entry will intuitively be the "usual"
+      | last entry of the array (arr[size-1]) "+1 ed" so that becomes just arr[size]
+
+loop:
+      CMPLT(r1, r2, r3)  | while left < right (r1 < r2)
+      BEQ(r3, done, r31) | if r1 >= r2, reverse is done
+
+      SHLC(r1, 2, r4)    | effective index of left
+      SHLC(r2, 2, r5)    | effective index of right
+
+      LD(r4, DATA, r6)    | left entry
+      LD(r5, DATA, r7)    | right entry
+
+      ST(r6, DATA, r5)    | arr[right] = arr[left]
+      ST(r7, DATA, r4)    | arr[left] = arr[right]
+
+next:
+      ADDC(r1, 1, r1) | increment left pointer
+      SUBC(r2, 1, r2) | decrement right pointer
+      BR(loop)        | go back
+
+done:
+      HALT()
+
+DATA: LONG(5)
+      LONG(3)   | 0x03
+      LONG(-5)  | 0xFB
+      LONG(12)  | 0x0C
+      LONG(-14) | 0xF2
+      LONG(1)   | 0x01

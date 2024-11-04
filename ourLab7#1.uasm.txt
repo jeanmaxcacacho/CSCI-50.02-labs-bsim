@@ -1,0 +1,44 @@
+| CACACHO, Jean Maximus
+| DURON, Joseph Jr
+| ONG, Paolo Gabriel
+
+| DATA = [3, -5, 12, -14, 1]
+| result = -2
+
+| DATA = [3, 6, 9, 12, 15]
+| result = 18
+
+.include beta.uasm
+
+main:
+      LD(r31, DATA, r0) | r0 will have array size
+      ADDC(r31, 0, r1)  | r1 will hold running sum
+      ADDC(r31, 1, r2)  | r2 will hold "array index"
+
+loop:
+      CMPLE(r2, r0, r3)  | current index <= array size?
+      BEQ(r3, done, r31) | if index > array size then loop done
+
+      SHLC(r2, 2, r4)    | calculate effective index
+      LD(r4, DATA, r5)   | load current array entry into r5
+      ANDC(r5, 1, r6)    | bitwise AND to check for odd/even
+      BNE(r6, next, r31) | if r6 == 1, then r5 is odd, skip
+
+      ADD(r5, r1, r1)    | add even number to the running sum
+
+next:
+      ADDC(r2, 1, r2)    | increment index
+      BR(loop)           | go back
+
+done:
+      ST(r1, result, r31) | put result into main memory
+      HALT()
+
+DATA: LONG(5)   | array size
+      LONG(3)   | first entry
+      LONG(-5)
+      LONG(12)
+      LONG(-14)
+      LONG(1)   | last entry 
+
+result: LONG(0)
