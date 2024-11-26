@@ -1,0 +1,30 @@
+.include beta.uasm
+
+ADDC (R31, 0x300, SP)
+ADDC (R31, -1, R1)
+ADDC (R31, 2, R2)
+PUSH (R2)
+PUSH (R1)
+BR (ave,LP)
+SUBC (SP, 4, SP)
+HALT()
+
+ave: PUSH (LP)
+PUSH (BP) | function enter sequence
+ADD(R31, SP, BP)
+PUSH(R1)
+PUSH(R2)
+
+LD (BP, -12, R1)
+LD (BP, -16, R2)
+ADD(R1, R2, R1)
+SRAC(R1, 1, R0)
+
+POP (R1)
+POP (R2)
+POP (BP)
+POP (LP)
+JMP (LP)
+
+.=0x200 | this also increases allocation to 0x200 x 2 - 4 = 0x3FC
+LONG(0)

@@ -1,0 +1,52 @@
+.include beta.uasm
+
+ADDC (R31, 0x300, SP)
+ADDC (R31, -1, R1)
+ADDC (R31, 2, R2)
+ADDC (R31, -3, R3)
+ADDC (R31, 0x4444, R4)
+ADDC (R31, 7, R5)
+PUSH (R5) | NOTE: if SP default value is 0 to begin with, you'll start overwriting code
+BR (fib,LP)
+SUBC (SP, 4, SP)
+HALT()
+
+fib: PUSH (LP)
+PUSH (BP) | function enter sequence
+ADD(R31, SP, BP)
+PUSH(R1)
+PUSH(R2)
+PUSH(R3)
+PUSH(R4)
+
+LD (BP, -12, R1) | access args (which is the 3rd stack above locals)
+CMPEQC(R1, 1, R2)
+BEQ(R2, fib2, R31)
+ADDC (R31, 0, R0) | return 0;
+BR(fibExit)
+fib2: CMPEQC(R1, 2, R2)
+BEQ (R2, fib3, R31)
+ADDC (R31, 1, R0) | return 1;
+BR(fibExit)
+fib3: SUBC (R1, 1, R2)
+PUSH (R2)
+BR(fib, LP)
+SUBC(SP, 4, SP)
+ADD (R31, R0, R3)
+SUBC(R1, 2, R2)
+PUSH(R2)
+BR(fib, LP)
+SUBC(SP, 4, SP)
+ADD (R31, R0, R4)
+ADD (R3, R4, R0)
+
+fibExit: POP (R4) | pop in reverse order
+POP (R3)
+POP (R2)
+POP (R1)
+POP (BP)
+POP (LP)
+JMP (LP)
+
+.=0x200 | this also increases allocation to 0x200 x 2 - 4 = 0x3FC
+LONG(0)
